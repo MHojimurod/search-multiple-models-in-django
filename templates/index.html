@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <style>
+        .style{
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+    </style>
+</head>    
+    <body class="style" style="margin-top: 20vh; font-size: 32px;">
+    <h3>{% if query is not None %}{{ count }} results for <b><mark>{{ query }}</mark>{% endif %}</h/b></h3>   
+        {% for object in object_list %}
+                   <div class='res'>
+                        <p>{{ object.title }}</p>
+                        <p>{{ object.desc }}</p>
+                   </div>
+        {% empty %}
+            <div>
+            <form method='GET'>
+                <div class="style" style="font-size: 32px;">
+                    <input type="text" name="q" data-toggle="popover" data-placement="bottom" data-content="Press enter to search"  placeholder="Search..." value="" data-original-title="" title="" autofocus="autofocus">
+                    <input onclick="highlight('{{ query }}')" style="margin-top: 10px;" type="Submit" >
+                </div>
+            </form>
+            </div>
+        {% endfor %}
+        {% if query is not None %}
+        <div class="style" style='margin-top: 10px;'>
+            <button  onclick="window.history.back()">Back</button>
+        </div>
+        {% endif %}
+        {% if query is None %}
+        {% for i in all_data %}
+        <div class = "res">
+            <b>{{i.title}}</b><br>
+            {{i.desc}}
+        </div>
+        {% endfor %}
+        {% endif %}
+        <a target="_blank" href="https://github.com/MHojimurod/search-multiple-models-in-django">Get Code</a>
+        <script>
+            var search = "{{ query }}";
+            var res = document.querySelectorAll(".res");
+            function mark(html, index=0) {
+                var r = html.substring(0, index) + `<mark>${html.substring(index, index + search.length)}</mark>` + html.substring(index + search.length);
+                var len = r.indexOf(html, index + search.length + 6);
+                if(len >= 0 ) r = mark(r, index + search.length + 6);
+                return r;
+            }
+            res.forEach((item) =>{
+                var index = item.innerHTML.toLowerCase().indexOf(search.toLowerCase());
+                if(index >= 0){
+                    var html = item.innerHTML;
+                    var res = mark(html, index);
+                    item.innerHTML = res;
+                }
+            })
+        </script>
+</body>
+</html>
